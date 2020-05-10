@@ -19,14 +19,16 @@ public class MySqlPermissionUtils {
         List<P3ntestPermission> permissions = new ArrayList<>();
         try {
             PreparedStatement statement = Main.getMySqlConnection().getConnection().prepareStatement(
-                    "SELECT `permission`, `until` FROM `user-perms` WHERE `uuid` = ?");
+                    "SELECT `id`, `permission`, `until` FROM `user-perms` WHERE `uuid` = ?");
 
             statement.setString(1, uuid);
 
             ResultSet set = statement.executeQuery();
 
             while (set.next()) {
-                permissions.add(new P3ntestPermission(set.getString("permission"), set.getLong("until")));
+                P3ntestPermission perm = new P3ntestPermission(set.getString("permission"), set.getLong("until"));
+                perm.setPermissionId(set.getInt("id"));
+                permissions.add(perm);
             }
         } catch (SQLException exception) {
             exception.printStackTrace();

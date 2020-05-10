@@ -1,6 +1,6 @@
 package me.P3ntest.permissions;
 
-import me.P3ntest.permissions.commands.PermissionCommand;
+import me.P3ntest.permissions.commands.permission.PermissionCommand;
 import me.P3ntest.permissions.events.PlayerLoginEventListener;
 import me.P3ntest.permissions.events.PlayerQuitEventListener;
 import me.P3ntest.permissions.mysql.MySqlConnection;

@@ -7,6 +7,11 @@ public class P3ntestPermission {
     private String permission;
     private long entTimestamp;
 
+    private int permissionId;
+
+    public int getPermissionId() {return permissionId;}
+    public void setPermissionId(int permissionId) {this.permissionId = permissionId;}
+
     public String getPermission() {return permission;}
 
     public long getEndTimestamp() {return entTimestamp;}

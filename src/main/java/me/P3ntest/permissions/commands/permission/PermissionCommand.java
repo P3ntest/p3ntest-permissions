@@ -1,6 +1,7 @@
-package me.P3ntest.permissions.commands;
+package me.P3ntest.permissions.commands.permission;
 
 import me.P3ntest.permissions.Main;
+import me.P3ntest.permissions.commands.permission.subcommands.ShowUserInfoSubCommand;
 import me.P3ntest.permissions.messages.TextBuilder;
 import me.P3ntest.permissions.mysql.MySqlPermissionUtils;
 import me.P3ntest.permissions.permissions.P3ntestPermission;
@@ -13,7 +14,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import javax.xml.soap.Text;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ public class PermissionCommand implements CommandExecutor {
         if (args.length > 1) {
             if (args[0].equalsIgnoreCase("user")) {
                 if (args.length == 2) {
-                    showPlayerInfo(sender, args[1]);
+                    ShowUserInfoSubCommand.execute(sender, args);
                     return true;
                 } else if (args.length > 3) {
                     if (args[2].equalsIgnoreCase("add")) {
@@ -83,55 +83,6 @@ public class PermissionCommand implements CommandExecutor {
     }
 
     private void showPlayerInfo(CommandSender sender, String username) {
-        String uuid = MySqlPermissionUtils.getUuid(username);
-        if (uuid != null) {
-            //Header
-            sender.sendMessage(Main.prefix + "Info about " + ChatColor.BOLD + ChatColor.GOLD + username);
 
-            //UUID (Click = open namemc profile)
-            new TextBuilder(ChatColor.translateAlternateColorCodes('&', "&c&oUUID: &r&a" + uuid))
-                    .setHoverEvent(TextBuilder.HoverEventType.SHOW_TEXT, ChatColor.GREEN + "OPEN PROFILE")
-                        .setClickEvent(TextBuilder.ClickEventType.OPEN_URL, "https://de.namemc.com/profile/" + uuid)
-                        .buildText().sendMessage((Player) sender);
-
-            //Spacer
-            sender.sendMessage(" ");
-
-            //Ranks Header
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&6&lRanks"));
-
-            //Ranks Display
-            for (P3ntestRank userRank : MySqlPermissionUtils.getUserRanks(MySqlPermissionUtils.getUuid(username))) {
-
-                sender.sendMessage(ChatColor.GRAY + " - " + ChatColor.RESET + userRank.getDisplayName());
-
-            }
-
-            //Spacer
-            sender.sendMessage(" ");
-
-            //Permissions Header
-            String rawPermissionsHeaderAddButton = new TextBuilder(ChatColor.GREEN + "" + ChatColor.BOLD + "[ADD]")
-                    .setClickEvent(TextBuilder.ClickEventType.SUGGEST_TEXT, "/permissions user " + username + " add ")
-                    .buildText().getJson();
-            new TextBuilder(ChatColor.translateAlternateColorCodes('&',"&6&lPermissions")
-                    + rawPermissionsHeaderAddButton).buildText().sendMessage((Player) sender);
-
-
-            //Permissions
-            for (P3ntestPermission userPermission : MySqlPermissionUtils.getUserPermissions(MySqlPermissionUtils.getUuid(username))) {
-                if (userPermission.getEndTimestamp() == -1 || userPermission.getEndTimestamp() >= System.currentTimeMillis()) {
-                    String text = ChatColor.GRAY + " - " + ChatColor.RESET + userPermission.getPermission();
-                    if (userPermission.getEndTimestamp() >= System.currentTimeMillis()) {
-                        text += ChatColor.GRAY + " (" + ChatColor.GREEN +
-                                TimeFormatter.formatMilliseconds(userPermission.getEndTimestamp() - System.currentTimeMillis()) +
-                                ChatColor.RESET + ChatColor.GRAY + ")";
-                    }
-                    sender.sendMessage(text);
-                }
-            }
-        } else {
-            sender.sendMessage(Main.prefix + "No information.");
-        }
     }
 }
