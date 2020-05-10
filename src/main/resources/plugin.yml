@@ -1,0 +1,15 @@
+name: p3ntest-perms
+version: 1.0
+author: P3ntest
+authors:
+  - P3ntest
+main: me.P3ntest.permissions.Main
+api-version: 1.13
+commands:
+  perms:
+    aliases:
+      - permissions
+      - pperms
+      - perm
+      - rank
+    permission: pp.cmd
