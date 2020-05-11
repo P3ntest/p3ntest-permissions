@@ -56,7 +56,7 @@ public class MySqlPermissionUtils {
         List<P3ntestRank> ranks = new ArrayList<>();
         try {
             PreparedStatement statement = Main.getMySqlConnection().getConnection().prepareStatement(
-                    "SELECT `rankid`, `until` FROM `player-ranks` WHERE `uuid` = ?");
+                    "SELECT `id`, `rankid`, `until` FROM `player-ranks` WHERE `uuid` = ?");
 
             statement.setString(1, uuid);
 
@@ -64,11 +64,16 @@ public class MySqlPermissionUtils {
 
             while (set.next()) {
                 P3ntestRank rank = getRank(set.getInt("rankid"));
+                rank.setAssignedId(set.getInt("id"));
                 rank.setEndTimestamp(set.getLong("until"));
+                ranks.add(rank);
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
+
+        System.out.println("Get user ranks: " + ranks.size());
+        ranks.forEach(p3ntestRank -> System.out.println(p3ntestRank.getHumanId()));
 
         return ranks;
     }
@@ -77,7 +82,7 @@ public class MySqlPermissionUtils {
         P3ntestRank rank = null;
         try {
             PreparedStatement statement = Main.getMySqlConnection().getConnection().prepareStatement(
-                    "SELECT `power`, `color`, `prefix`, `displayname` FROM `ranks` WHERE id=?");
+                    "SELECT `power`, `color`, `prefix`, `displayname`, `humanid` FROM `ranks` WHERE id=?");
 
             statement.setInt(1, rankId);
 
@@ -90,7 +95,8 @@ public class MySqlPermissionUtils {
                         set.getInt("power"),
                         ChatColor.valueOf(set.getString("color").toUpperCase()),
                         set.getString("prefix"),
-                        set.getString("displayname"));
+                        set.getString("displayname"),
+                        set.getString("humanid"));
             }
 
         } catch (SQLException exception) {
@@ -104,7 +110,7 @@ public class MySqlPermissionUtils {
         List<P3ntestRank> ranks = new ArrayList<>();
         try {
             PreparedStatement statement = Main.getMySqlConnection().getConnection().prepareStatement(
-                    "SELECT `id`, `power`, `color`, `prefix`, `displayname` FROM `ranks`");
+                    "SELECT `id`, `power`, `color`, `prefix`, `displayname`, `humanid` FROM `ranks` ORDER BY `power` DESC");
 
             ResultSet set = statement.executeQuery();
 
@@ -115,7 +121,8 @@ public class MySqlPermissionUtils {
                         set.getInt("power"),
                         ChatColor.valueOf(set.getString("color").toUpperCase()),
                         set.getString("prefix"),
-                        set.getString("displayname")));
+                        set.getString("displayname"),
+                        set.getString("humanid")));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();

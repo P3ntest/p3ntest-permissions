@@ -66,9 +66,11 @@ public class MySqlConnection {
             PreparedStatement statement =
                     connection.prepareStatement(
                             "CREATE TABLE IF NOT EXISTS `minecraft`.`player-ranks` " +
-                                    "( `uuid` VARCHAR(128) NOT NULL , " +
+                                    "( `id` INT NOT NULL AUTO_INCREMENT , " +
+                                    "`uuid` VARCHAR(128) NOT NULL , " +
                                     "`rankid` INT NOT NULL , " +
-                                    "`until` BIGINT NOT NULL )" +
+                                    "`until` BIGINT NOT NULL , " +
+                                    "PRIMARY KEY (`id`)) " +
                                     "ENGINE = InnoDB;");
             statement.execute();
         } catch (SQLException exception) {
